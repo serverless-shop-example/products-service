@@ -4,6 +4,7 @@
   "description": "",
   "main": "gulpfile.js",
   "scripts": {
+    "module-install": "gulp install",
     "package": "gulp package",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

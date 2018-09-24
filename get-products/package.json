@@ -1,0 +1,23 @@
+{
+  "name": "get-products",
+  "version": "1.0.0",
+  "description": "Lambda Function to query products",
+  "main": "src/index.js",
+  "scripts": {
+    "package": "gulp package",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Leo Lindhorst",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.299.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-clean": "^0.4.0",
+    "gulp-cli": "^2.0.1",
+    "gulp-install": "^1.1.0",
+    "gulp-zip": "^4.2.0",
+    "merge-stream": "^1.0.1"
+  }
+}

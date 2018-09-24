@@ -10,7 +10,7 @@ phases:
     - npm run package
   post_build:
     commands:
-    - aws cloudformation package  --template-file ./products-service.yaml --s3-bucket shop-cf-resources --output-template-file products-service.pkg.yaml
+    - aws cloudformation package  --template-file ./products-service.yaml --s3-bucket $CF_RESOURCE_BUCKET --output-template-file products-service.pkg.yaml
 artifacts:
   files:
   - products-service.pkg.yaml

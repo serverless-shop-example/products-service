@@ -10,14 +10,18 @@ async function handler() {
     try {
         const { Items: productItems } = await DynamoDB.scan({
             TableName: PRODUCTS_TABLE,
-            ProjectionExpression: 'id,title',
+            ProjectionExpression: '#i,#n',
+            ExpressionAttributeNames: {
+                '#i': 'id',
+                '#n': 'name',
+            }
         }).promise();
 
         return buildResponse(200, productItems
-            .map(({ id: { S: id }, title: { S: title } }) =>
+            .map(({ id: { S: id }, name: { S: name } }) =>
                 ({
                     id,
-                    title
+                    name
                 })));
     } catch (e) {
         console.log(JSON.stringify(e.message));

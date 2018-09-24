@@ -1,0 +1,106 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Backend for the shop example
+Resources:
+
+  ProductsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        -
+          AttributeName: "id"
+          AttributeType: "S"
+      KeySchema:
+        -
+          AttributeName: "id"
+          KeyType: "HASH"
+      ProvisionedThroughput:
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2
+
+  GetProductsFunction:
+      Type: AWS::Lambda::Function
+      Properties:
+        Handler: src/index.handler
+        Role: !GetAtt GetProductsExecutionRole.Arn
+        Code: '../get-products/dist/get-products.zip'
+        Runtime: nodejs8.10
+        Environment:
+          Variables:
+            'PRODUCTS_TABLE': !Ref ProductsTable
+
+  GetProductsExecutionRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+              - lambda.amazonaws.com
+            Action:
+            - sts:AssumeRole
+        Path: "/lambda/"
+        Policies:
+        - PolicyName: GetProductsExecution
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                - logs:*
+                Resource: arn:aws:logs:*:*:*
+              - Effect: Allow
+                Action:
+                - dynamodb:Scan
+                Resource: !GetAtt ProductsTable.Arn
+
+  PostProductFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: src/index.handler
+      Role: !GetAtt PostProductExecutionRole.Arn
+      Code: '../post-product/dist/post-product.zip'
+      Runtime: nodejs8.10
+      Environment:
+        Variables:
+          'PRODUCTS_TABLE': !Ref ProductsTable
+
+  PostProductExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/lambda/"
+      Policies:
+      - PolicyName: PostProductExecution
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:*
+            Resource: arn:aws:logs:*:*:*
+          - Effect: Allow
+            Action:
+            - dynamodb:PutItem
+            Resource: !GetAtt ProductsTable.Arn
+
+Outputs:
+   GetProductsFunction:
+    Description: ARN of the Get Products Lambda function
+    Value: !GetAtt GetProductsFunction.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-GetProductsFunction"
+  PostProductFunction:
+    Description: ARN of the Post Product Lambda function
+    Value: !GetAtt PostProductFunction.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-PostProductFunction"

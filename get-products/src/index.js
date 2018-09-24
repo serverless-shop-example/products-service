@@ -21,7 +21,7 @@ async function handler() {
                 })));
     } catch (e) {
         console.log(JSON.stringify(e.message));
-        return buildResponse(500, JSON.stringify(e.message));
+        return buildResponse(500, e.message);
     }
 
 }
@@ -32,7 +32,7 @@ function buildResponse(statusCode, body) {
         headers: {
             'Access-Control-Allow-Origin': '*',
         },
-        body,
+        body: JSON.stringify(body),
     };
 }
 

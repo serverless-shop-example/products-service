@@ -20,7 +20,7 @@ async function handler({ body }) {
             },
         }).promise();
 
-        return buildResponse(201, {id, name: body.name});
+        return buildResponse(201, {id, name: payload.name});
     } catch (e) {
         console.log(JSON.stringify(e.message));
         return buildResponse(500, e.message);
